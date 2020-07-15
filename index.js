@@ -122,6 +122,7 @@ async function compile(version, directory) {
     throw new Error(`Could not extract LLVM and Clang source. code = ${exit}`);
   }
   await io.mkdirP(path.join(directory, 'build'));
+  await exec.exec('ls');
   console.log(`Generating the project using cmake...`);
   exit = await exec.exec('cmake', [
     '-G',
