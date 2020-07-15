@@ -1211,7 +1211,7 @@ async function compile(version, directory) {
   console.log(`Generating the project using cmake...`);
   exit = await exec.exec('cmake', [
     '-G',
-    'Ninja',
+    'Unix Makefiles',
     '-DCMAKE_BUILD_TYPE=Release',
     '-S',
     path.join(directory, 'llvm'),
