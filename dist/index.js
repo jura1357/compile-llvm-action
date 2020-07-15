@@ -1212,6 +1212,8 @@ async function compile(version, directory) {
     '-G',
     'Ninja',
     '-DCMAKE_BUILD_TYPE=Release',
+    '-S',
+    directory,
     '-B',
     path.join(directory, 'build'),
   ]);
