@@ -1213,7 +1213,7 @@ async function compile(version, directory) {
     'Ninja',
     '-DCMAKE_BUILD_TYPE=Release',
     '-S',
-    directory,
+    path.join(directory, 'llvm'),
     '-B',
     path.join(directory, 'build'),
   ]);
