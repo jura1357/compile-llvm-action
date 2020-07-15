@@ -20,7 +20,7 @@ jobs:
       #     path: ${{ runner.temp }}/llvm/10.0
       #     key: ${{ matrix.os }}-llvm-10.0
       - name: Build LLVM and Clang
-        uses: shekohex/compile-llvm-action@v0.1.3-alpha
+        uses: shekohex/compile-llvm-action@master
         with:
           version: '10.0'
           directory: ${{ runner.temp }}/llvm/10.0
