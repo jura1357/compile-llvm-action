@@ -122,12 +122,13 @@ async function compile(version, directory) {
     throw new Error(`Could not extract LLVM and Clang source. code = ${exit}`);
   }
   await io.mkdirP(path.join(directory, 'build'));
-  process.chdir(path.join(directory, 'build'));
   console.log(`Generating the project using cmake...`);
   exit = await exec.exec('cmake', [
     '-G',
     'Ninja',
     '-DCMAKE_BUILD_TYPE=Release',
+    '-B',
+    path.join(directory, 'build'),
   ]);
   if (exit !== 0) {
     throw new Error(
@@ -135,7 +136,7 @@ async function compile(version, directory) {
     );
   }
   console.log(`Start building LLVM...`);
-  exit = await exec.exec('cmake', ['-build', '.']);
+  exit = await exec.exec('cmake', ['-build', path.join(directory, 'build')]);
   if (exit !== 0) {
     throw new Error(`Could build llvm using cmake. code = ${exit}`);
   }
