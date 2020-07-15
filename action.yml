@@ -1,21 +1,21 @@
-name: "Install LLVM and Clang"
-description: "Downloads and installs LLVM and Clang binaries."
+name: 'Compile LLVM and Clang'
+description: 'Downloads and Compiles LLVM and Clang binaries.'
 
 inputs:
   version:
-    description: "The version of LLVM and Clang binaries to install."
+    description: 'The version of LLVM and Clang binaries to Compile.'
     required: true
   directory:
-    description: "The directory to install LLVM and Clang binaries to."
+    description: 'The directory to Compile LLVM and Clang binaries to.'
     required: true
   cached:
-    description: "Whether the LLVM and Clang binaries were cached."
+    description: 'Whether the LLVM and Clang binaries were cached.'
     required: false
 
 outputs:
   version:
-    description: "The full version of LLVM and Clang binaries installed."
+    description: 'The full version of LLVM and Clang binaries Compileed.'
 
 runs:
-  using: "node12"
-  main: "dist/index.js"
+  using: 'node12'
+  main: 'dist/index.js'

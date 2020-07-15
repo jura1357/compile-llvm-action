@@ -1,4 +1,4 @@
-# install-llvm-action
+# compile-llvm-action
 
 A GitHub Action for downloading and installing LLVM and Clang binaries.
 
@@ -43,7 +43,7 @@ minimum version like `3.6` or `3`.
 - name: Install LLVM and Clang
   uses: KyleMayes/install-llvm-action@v1
   with:
-    version: "10.0"
+    version: '10.0'
     directory: ~/.clang
 ```
 
@@ -59,7 +59,7 @@ minimum version like `3.6` or `3`.
 - name: Install LLVM and Clang
   uses: KyleMayes/install-llvm-action@v1
   with:
-    version: "10.0"
+    version: '10.0'
     directory: ~/.clang
     cached: ${{ steps.cache-llvm.outputs.cache-hit }}
 ```

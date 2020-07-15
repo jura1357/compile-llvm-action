@@ -1,8 +1,8 @@
 {
-  "name": "install-llvm-action",
+  "name": "compile-llvm-action",
   "version": "1.0.0",
-  "description": "A GitHub Action for downloading and installing LLVM and Clang binaries.",
-  "author": "Kyle Mayes <kyle@mayeses.com>",
+  "description": "A GitHub Action for downloading and compiling LLVM and Clang binaries.",
+  "author": "Shady Khalifa <shekohex@gmail.com>",
   "license": "Apache-2.0",
   "main": "dist/index.js",
   "scripts": {
