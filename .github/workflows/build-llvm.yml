@@ -1,0 +1,27 @@
+name: Build LLVM
+
+on:
+  push:
+jobs:
+  build:
+    name: Build LLVM
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: macos-latest
+          - os: windows-latest
+    steps:
+      - name: Cache LLVM and Clang
+        id: cache-llvm
+        uses: actions/cache@v2
+        with:
+          path: ${{ runner.temp }}/llvm/10.0
+          key: ${{ matrix.os }}-llvm-10.0
+      - name: Build LLVM and Clang
+        uses: shekohex/compile-llvm-action@v0.1-alpha
+        with:
+          version: '10.0'
+          directory: ${{ runner.temp }}/llvm/10.0
+          cached: ${{ steps.cache-llvm.outputs.cache-hit }}
