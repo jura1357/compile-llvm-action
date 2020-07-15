@@ -26,6 +26,8 @@ jobs:
           directory: ${{ runner.temp }}/llvm/10.0
           cached: ${{ steps.cache-llvm.outputs.cache-hit }}
       - name: LLVM Version (Windows)
+        if: matrix.os == 'windows-latest'
         run: ${{ runner.temp }}/llvm/10.0/build/bin/llvm-config.exe --version
       - name: LLVM Version (Unix)
+        if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
         run: ${{ runner.temp }}/llvm/10.0/build/bin/llvm-config --version
