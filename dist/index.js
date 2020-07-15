@@ -1168,6 +1168,8 @@ function getUrl(version) {
  * @param {string} directory
  */
 async function compile(version, directory) {
+  const platform = process.platform;
+
   if (!VERSIONS.has(version)) {
     throw new Error(`Unsupported target! (version='${version}')`);
   }
@@ -1189,15 +1191,18 @@ async function compile(version, directory) {
   console.log(`Downloading and extracting '${url}'...`);
   const archive = await tc.downloadTool(url);
   let exit;
-  await io.mkdirP(directory);
-  exit = await exec.exec('tar', [
-    'xf',
-    archive,
-    '-C',
-    directory,
-    '--strip-components=1',
-  ]);
-
+  if (platform === 'win32') {
+    exit = await exec.exec('7z', ['x', archive, `-o${directory}`]);
+  } else {
+    await io.mkdirP(directory);
+    exit = await exec.exec('tar', [
+      'xf',
+      archive,
+      '-C',
+      directory,
+      '--strip-components=1',
+    ]);
+  }
   if (exit !== 0) {
     throw new Error(`Could not extract LLVM and Clang source. code = ${exit}`);
   }
@@ -1223,7 +1228,7 @@ async function compile(version, directory) {
   if (exit !== 0) {
     throw new Error(`Could build llvm using cmake. code = ${exit}`);
   }
-  await exec.exec('ls', ['.']);
+  await exec.exec('ls', [path.join(directory, 'build')]);
   console.log(`Installed LLVM and Clang ${version} (${fullVersion})!`);
 }
 
