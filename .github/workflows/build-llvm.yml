@@ -25,3 +25,7 @@ jobs:
           version: '10.0'
           directory: ${{ runner.temp }}/llvm/10.0
           cached: ${{ steps.cache-llvm.outputs.cache-hit }}
+      - name: LLVM Version (Windows)
+        run: ${{ runner.temp }}/llvm/10.0/build/bin/llvm-config.exe --version
+      - name: LLVM Version (Unix)
+        run: ${{ runner.temp }}/llvm/10.0/build/bin/llvm-config --version
