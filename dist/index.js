@@ -1185,7 +1185,7 @@ async function downloadLLVM(version, outPath) {
   const archive = await tc.downloadTool(url);
   let exit;
   if (platform === 'win32') {
-    await exec.exec('scoop install tar');
+    await exec.exec('choco install tar');
   }
   await io.mkdirP(outPath);
   exit = await exec.exec('tar', [
@@ -1226,7 +1226,7 @@ async function downloadClang(version, outPath) {
   const archive = await tc.downloadTool(url);
   let exit;
   if (platform === 'win32') {
-    await exec.exec('scoop install tar');
+    await exec.exec('choco install tar');
   }
   exit = await io.mkdirP(outPath);
   exit = await exec.exec('tar', [
