@@ -187,8 +187,6 @@ async function compile(version, directory) {
   exit = await exec.exec('cmake', [
     '-G',
     'Ninja',
-    // '-DLLVM_ENABLE_PROJECTS=clang',
-    '-DLLVM_TARGETS_TO_BUILD="host"',
     '-DCMAKE_BUILD_TYPE=Release',
     '-DLLVM_BUILD_LLVM_DYLIB=ON',
     '-DLLVM_LINK_LLVM_DYLIB=ON',
