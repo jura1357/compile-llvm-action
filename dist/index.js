@@ -1154,9 +1154,92 @@ function getFullVersions(version) {
 
 /**
  * @param {string} version
+ * @param {string} component
  */
-function getUrl(version) {
-  return `https://github.com/llvm/llvm-project/releases/download/llvmorg-${version}/llvm-project-${version}.tar.xz`;
+function getUrl(version, component) {
+  return `https://github.com/llvm/llvm-project/releases/download/llvmorg-${version}/${component}-${version}.src.tar.xz`;
+}
+
+/**
+ * @param {string} version
+ * @param {string} outPath
+ */
+async function downloadLLVM(version, outPath) {
+  const platform = process.platform;
+  let url;
+  let fullVersion;
+  for (const v of getFullVersions(version)) {
+    url = getUrl(v, 'llvm');
+    if (url) {
+      fullVersion = v;
+      core.setOutput('version', fullVersion);
+      break;
+    }
+  }
+  if (!url) {
+    throw new Error(`Unsupported target! (version='${version}')`);
+  }
+
+  console.log(`Using LLVM ${version} (${fullVersion})...`);
+  console.log(`Downloading and extracting '${url}'...`);
+  const archive = await tc.downloadTool(url);
+  let exit;
+  if (platform === 'win32') {
+    exit = await exec.exec('7z', ['x', archive, `-o${outPath}`]);
+  } else {
+    await io.mkdirP(outPath);
+    exit = await exec.exec('tar', [
+      'xf',
+      archive,
+      '-C',
+      outPath,
+      '--strip-components=1',
+    ]);
+  }
+  if (exit !== 0) {
+    throw new Error(`Could not extract LLVM source. code = ${exit}`);
+  }
+}
+
+/**
+ * @param {string} version
+ * @param {string} outPath
+ */
+async function downloadClang(version, outPath) {
+  const platform = process.platform;
+  let url;
+  let fullVersion;
+  for (const v of getFullVersions(version)) {
+    url = getUrl(v, 'clang');
+    if (url) {
+      fullVersion = v;
+      core.setOutput('version', fullVersion);
+      break;
+    }
+  }
+  if (!url) {
+    throw new Error(`Unsupported target! (version='${version}')`);
+  }
+
+  console.log(`Using Clang ${version} (${fullVersion})...`);
+  console.log(`Downloading and extracting '${url}'...`);
+  const archive = await tc.downloadTool(url);
+  let exit;
+  if (platform === 'win32') {
+    exit = await exec.exec('7z', ['x', archive, `-o${outPath}`]);
+  } else {
+    await io.mkdirP(outPath);
+    exit = await exec.exec('tar', [
+      'xf',
+      archive,
+      '-C',
+      outPath,
+      '--strip-components=1',
+    ]);
+  }
+  if (exit !== 0) {
+    throw new Error(`Could not extract Clang source. code = ${exit}`);
+  }
 }
 
 //================================================
@@ -1173,39 +1256,9 @@ async function compile(version, directory) {
   if (!VERSIONS.has(version)) {
     throw new Error(`Unsupported target! (version='${version}')`);
   }
-  let url;
-  let fullVersion;
-  for (const v of getFullVersions(version)) {
-    url = getUrl(v);
-    if (url) {
-      fullVersion = v;
-      core.setOutput('version', fullVersion);
-      break;
-    }
-  }
-  if (!url) {
-    throw new Error(`Unsupported target! (version='${version}')`);
-  }
-
-  console.log(`Using LLVM ${version} (${fullVersion})...`);
-  console.log(`Downloading and extracting '${url}'...`);
-  const archive = await tc.downloadTool(url);
+  await downloadLLVM(version, directory);
+  await downloadClang(version, path.join(directory, 'tools/clang'));
   let exit;
-  if (platform === 'win32') {
-    exit = await exec.exec('7z', ['x', archive, `-o${directory}`]);
-  } else {
-    await io.mkdirP(directory);
-    exit = await exec.exec('tar', [
-      'xf',
-      archive,
-      '-C',
-      directory,
-      '--strip-components=1',
-    ]);
-  }
-  if (exit !== 0) {
-    throw new Error(`Could not extract LLVM and Clang source. code = ${exit}`);
-  }
   await io.mkdirP(path.join(directory, 'build'));
   console.log('Installing Ninja ..');
   if (platform === 'linux') {
@@ -1219,7 +1272,8 @@ async function compile(version, directory) {
   exit = await exec.exec('cmake', [
     '-G',
     'Ninja',
-    '-DLLVM_ENABLE_PROJECTS=clang',
+    // '-DLLVM_ENABLE_PROJECTS=clang',
+    '-DLLVM_TARGETS_TO_BUILD="host"',
     '-DCMAKE_BUILD_TYPE=Release',
     '-DLLVM_BUILD_LLVM_DYLIB=ON',
     '-DLLVM_LINK_LLVM_DYLIB=ON',
@@ -1241,7 +1295,7 @@ async function compile(version, directory) {
   }
   exit = await exec.exec('ls', [path.join(directory, 'build', 'bin')]);
   exit = await exec.exec('ls', [path.join(directory, 'build', 'lib')]);
-  console.log(`Installed LLVM and Clang ${version} (${fullVersion})!`);
+  console.log(`Installed LLVM and Clang ${version}!`);
 }
 
 /**
