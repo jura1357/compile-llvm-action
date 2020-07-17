@@ -152,8 +152,7 @@ async function compile(version, directory) {
     );
   }
   console.log(`Start building LLVM...`);
-  await exec.exec('ninja -h');
-  exit = await exec.exec('ninja', [path.join(directory, 'build')]);
+  exit = await exec.exec('ninja -C', [path.join(directory, 'build')]);
   if (exit !== 0) {
     throw new Error(`Could build llvm using cmake. code = ${exit}`);
   }
