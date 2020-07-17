@@ -1207,27 +1207,25 @@ async function compile(version, directory) {
     throw new Error(`Could not extract LLVM and Clang source. code = ${exit}`);
   }
   await io.mkdirP(path.join(directory, 'build'));
-  let sourcePath;
-  if (platform === 'win32') {
-    sourcePath = path.join(directory);
-  } else {
-    sourcePath = path.join(directory);
-  }
+  console.log('Installing Ninja ..');
   if (platform === 'linux') {
-    //
-    console.log('Installing Ninja ..');
     await exec.exec('sudo apt-get install -y ninja-build');
+  } else if (platform === 'darwin') {
+    await exec.exec('sudo brew install ninja');
+  } else if (platform === 'win32') {
+    await exec.exec('choco install ninja');
   }
   console.log(`Generating the project using cmake...`);
   exit = await exec.exec('cmake', [
     '-G',
     'Ninja',
+    '-DLLVM_ENABLE_PROJECTS=clang',
     '-DCMAKE_BUILD_TYPE=Release',
     '-DLLVM_BUILD_LLVM_DYLIB=ON',
     '-DLLVM_LINK_LLVM_DYLIB=ON',
     '-DLLVM_ENABLE_RTTI=ON',
     '-S',
-    sourcePath,
+    path.join(directory),
     '-B',
     path.join(directory, 'build'),
   ]);

@@ -11,15 +11,15 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-          # - os: macos-latest
+          - os: macos-latest
           # - os: windows-latest
     steps:
-      # - name: Cache LLVM and Clang
-      #   id: cache-llvm
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: ${{ runner.temp }}/llvm/10.0
-      #     key: ${{ matrix.os }}-llvm-10.0
+      - name: Cache LLVM and Clang
+        id: cache-llvm
+        uses: actions/cache@v2
+        with:
+          path: ${{ runner.temp }}/llvm/10.0
+          key: ${{ matrix.os }}-llvm-10.0
       - name: Build LLVM and Clang
         uses: shekohex/compile-llvm-action@master
         with:
