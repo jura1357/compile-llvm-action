@@ -188,8 +188,8 @@ async function compile(version, directory) {
     '-G',
     'Ninja',
     '-DCMAKE_BUILD_TYPE=Release',
-    '-DLLVM_BUILD_LLVM_DYLIB=ON',
-    '-DLLVM_LINK_LLVM_DYLIB=ON',
+    // '-DLLVM_BUILD_LLVM_DYLIB=ON',
+    // '-DLLVM_LINK_LLVM_DYLIB=ON',
     // '-DLLVM_ENABLE_RTTI=ON',
     '-S',
     path.join(directory),
@@ -220,8 +220,9 @@ async function run(version, directory, cached) {
   if (cached === 'true') {
     console.log(`Using cached LLVM and Clang ${version}...`);
   } else {
-    await compile(version, directory);
+    console.log('a Cold build');
   }
+  await compile(version, directory);
 
   const bin = path.resolve(path.join(directory, 'build', 'bin'));
   const lib = path.resolve(path.join(directory, 'build', 'lib'));
