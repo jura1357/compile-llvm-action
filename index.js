@@ -128,10 +128,15 @@ async function compile(version, directory) {
   } else {
     sourcePath = path.join(directory);
   }
+  if (platform === 'linux') {
+    //
+    console.log('Installing Ninja ..');
+    await exec.exec('apt install ninja');
+  }
   console.log(`Generating the project using cmake...`);
   exit = await exec.exec('cmake', [
     '-G',
-    'Unix Makefiles',
+    'Ninja',
     '-DCMAKE_BUILD_TYPE=Release',
     '-DLLVM_BUILD_LLVM_DYLIB=ON',
     '-DLLVM_LINK_LLVM_DYLIB=ON',
@@ -147,7 +152,8 @@ async function compile(version, directory) {
     );
   }
   console.log(`Start building LLVM...`);
-  exit = await exec.exec('cmake', ['-build', path.join(directory, 'build')]);
+  await exec.exec('ninja -h');
+  exit = await exec.exec('ninja', [path.join(directory, 'build')]);
   if (exit !== 0) {
     throw new Error(`Could build llvm using cmake. code = ${exit}`);
   }
