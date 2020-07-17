@@ -100,17 +100,17 @@ async function downloadLLVM(version, outPath) {
   const archive = await tc.downloadTool(url);
   let exit;
   if (platform === 'win32') {
-    exit = await exec.exec('7z', ['x', archive, `-o${outPath}`]);
-  } else {
-    await io.mkdirP(outPath);
-    exit = await exec.exec('tar', [
-      'xf',
-      archive,
-      '-C',
-      outPath,
-      '--strip-components=1',
-    ]);
+    await exec.exec('scoop install tar');
   }
+  await io.mkdirP(outPath);
+  exit = await exec.exec('tar', [
+    'xf',
+    archive,
+    '-C',
+    outPath,
+    '--strip-components=1',
+  ]);
+
   if (exit !== 0) {
     throw new Error(`Could not extract LLVM source. code = ${exit}`);
   }
@@ -141,17 +141,17 @@ async function downloadClang(version, outPath) {
   const archive = await tc.downloadTool(url);
   let exit;
   if (platform === 'win32') {
-    exit = await exec.exec('7z', ['x', archive, `-o${outPath}`]);
-  } else {
-    await io.mkdirP(outPath);
-    exit = await exec.exec('tar', [
-      'xf',
-      archive,
-      '-C',
-      outPath,
-      '--strip-components=1',
-    ]);
+    await exec.exec('scoop install tar');
   }
+  exit = await io.mkdirP(outPath);
+  exit = await exec.exec('tar', [
+    'xf',
+    archive,
+    '-C',
+    outPath,
+    '--strip-components=1',
+  ]);
+
   if (exit !== 0) {
     throw new Error(`Could not extract Clang source. code = ${exit}`);
   }
@@ -191,8 +191,8 @@ async function compile(version, directory) {
     '-DLLVM_BUILD_LLVM_DYLIB=ON',
     '-DLLVM_LINK_LLVM_DYLIB=ON',
     // '-DLLVM_ENABLE_RTTI=ON',
-    // '-S',
-    // path.join(directory),
+    '-S',
+    path.join(directory),
     '-B',
     path.join(directory, 'build'),
   ]);
