@@ -1277,7 +1277,7 @@ async function compile(version, directory) {
     '-DCMAKE_BUILD_TYPE=Release',
     '-DLLVM_BUILD_LLVM_DYLIB=ON',
     '-DLLVM_LINK_LLVM_DYLIB=ON',
-    '-DLLVM_ENABLE_RTTI=ON',
+    // '-DLLVM_ENABLE_RTTI=ON',
     '-S',
     path.join(directory),
     '-B',
