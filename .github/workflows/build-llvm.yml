@@ -10,8 +10,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-latest
-          - os: macos-latest
+          # - os: ubuntu-latest
+          # - os: macos-latest
           - os: windows-latest
     steps:
       - name: Cache LLVM and Clang

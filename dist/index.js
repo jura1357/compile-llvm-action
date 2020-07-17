@@ -1276,8 +1276,8 @@ async function compile(version, directory) {
     '-DLLVM_BUILD_LLVM_DYLIB=ON',
     '-DLLVM_LINK_LLVM_DYLIB=ON',
     // '-DLLVM_ENABLE_RTTI=ON',
-    '-S',
-    path.join(directory),
+    // '-S',
+    // path.join(directory),
     '-B',
     path.join(directory, 'build'),
   ]);
