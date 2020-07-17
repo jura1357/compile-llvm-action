@@ -15,7 +15,7 @@ jobs:
           # - os: windows-latest
     steps:
       - name: Cache LLVM and Clang
-        id: cache-llvm
+        id: cache-llvm-test
         uses: actions/cache@v2
         with:
           path: ${{ runner.temp }}/llvm/10.0
@@ -25,7 +25,7 @@ jobs:
         with:
           version: '10.0'
           directory: ${{ runner.temp }}/llvm/10.0
-          cached: ${{ steps.cache-llvm.outputs.cache-hit }}
+          cached: ${{ steps.cache-llvm-test.outputs.cache-hit }}
       - name: LLVM Version (Windows)
         if: matrix.os == 'windows-latest'
         run: ${{ runner.temp }}/llvm/10.0/build/bin/llvm-config.exe --version
