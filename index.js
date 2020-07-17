@@ -71,7 +71,7 @@ function getFullVersions(version) {
  * @param {string} version
  */
 function getUrl(version) {
-  return `https://github.com/llvm/llvm-project/archive/llvmorg-${version}.tar.gz`;
+  return `https://github.com/llvm/llvm-project/releases/download/llvmorg-${version}/llvm-${version}.src.tar.xz`;
 }
 
 //================================================
@@ -126,13 +126,16 @@ async function compile(version, directory) {
   if (platform === 'win32') {
     sourcePath = path.join(directory);
   } else {
-    sourcePath = path.join(directory, 'llvm');
+    sourcePath = path.join(directory);
   }
   console.log(`Generating the project using cmake...`);
   exit = await exec.exec('cmake', [
     '-G',
     'Unix Makefiles',
     '-DCMAKE_BUILD_TYPE=Release',
+    '-DLLVM_BUILD_LLVM_DYLIB=ON',
+    '-DLLVM_LINK_LLVM_DYLIB=ON',
+    '-DLLVM_ENABLE_RTTI=ON',
     '-S',
     sourcePath,
     '-B',
