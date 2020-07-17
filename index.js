@@ -71,7 +71,7 @@ function getFullVersions(version) {
  * @param {string} version
  */
 function getUrl(version) {
-  return `https://github.com/llvm/llvm-project/releases/download/llvmorg-${version}/llvm-${version}.src.tar.xz`;
+  return `https://github.com/llvm/llvm-project/archive/llvmorg-${version}.zip`;
 }
 
 //================================================
