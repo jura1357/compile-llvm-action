@@ -122,10 +122,11 @@ async function compile(version, directory) {
     throw new Error(`Could not extract LLVM and Clang source. code = ${exit}`);
   }
   await io.mkdirP(path.join(directory, 'build'));
+  let sourcePath;
   if (platform === 'win32') {
-    exit = await exec.exec('dir', [path.join(directory)]);
+    sourcePath = path.join(directory);
   } else {
-    exit = await exec.exec('ls', [path.join(directory)]);
+    sourcePath = path.join(directory, 'llvm');
   }
   console.log(`Generating the project using cmake...`);
   exit = await exec.exec('cmake', [
@@ -133,7 +134,7 @@ async function compile(version, directory) {
     'Unix Makefiles',
     '-DCMAKE_BUILD_TYPE=Release',
     '-S',
-    path.join(directory, 'llvm'),
+    sourcePath,
     '-B',
     path.join(directory, 'build'),
   ]);
