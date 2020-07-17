@@ -148,7 +148,8 @@ async function compile(version, directory) {
   if (exit !== 0) {
     throw new Error(`Could build llvm using cmake. code = ${exit}`);
   }
-  exit = await exec.exec('ls', [path.join(directory, 'build')]);
+  exit = await exec.exec('ls', [path.join(directory, 'build', 'bin')]);
+  exit = await exec.exec('ls', [path.join(directory, 'build', 'lib')]);
   console.log(`Installed LLVM and Clang ${version} (${fullVersion})!`);
 }
 
