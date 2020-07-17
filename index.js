@@ -126,7 +126,7 @@ async function compile(version, directory) {
   if (platform === 'linux') {
     await exec.exec('sudo apt-get install -y ninja-build');
   } else if (platform === 'darwin') {
-    await exec.exec('sudo brew install ninja');
+    await exec.exec('brew install ninja');
   } else if (platform === 'win32') {
     await exec.exec('choco install ninja');
   }
