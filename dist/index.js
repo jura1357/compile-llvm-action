@@ -1216,7 +1216,7 @@ async function compile(version, directory) {
   if (platform === 'linux') {
     //
     console.log('Installing Ninja ..');
-    await exec.exec('apt-get install ninja-build');
+    await exec.exec('sudo apt-get install -y ninja-build');
   }
   console.log(`Generating the project using cmake...`);
   exit = await exec.exec('cmake', [
