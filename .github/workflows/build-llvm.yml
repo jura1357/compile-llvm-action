@@ -18,17 +18,17 @@ jobs:
         id: cache-llvm
         uses: actions/cache@v2
         with:
-          path: ${{ runner.temp }}/llvm/10.0
+          path: ${{ runner.temp }}/llvm/4.0.1
           key: ${{ matrix.os }}-llvm-test
       - name: Build LLVM and Clang
         uses: shekohex/compile-llvm-action@master
         with:
-          version: '10.0'
-          directory: ${{ runner.temp }}/llvm/10.0
+          version: '4.0.1'
+          directory: ${{ runner.temp }}/llvm/4.0.1
           cached: ${{ steps.cache-llvm.outputs.cache-hit }}
       - name: LLVM Version (Windows)
         if: matrix.os == 'windows-latest'
-        run: ${{ runner.temp }}/llvm/10.0/build/bin/llvm-config.exe --version
+        run: ${{ runner.temp }}/llvm/4.0.1/build/bin/llvm-config.exe --version
       - name: LLVM Version (Unix)
         if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
-        run: ${{ runner.temp }}/llvm/10.0/build/bin/llvm-config --version
+        run: ${{ runner.temp }}/llvm/4.0.1/build/bin/llvm-config --version
