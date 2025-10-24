@@ -21,7 +21,7 @@ jobs:
           path: ${{ runner.temp }}/llvm/4.0.1
           key: ${{ matrix.os }}-llvm-test
       - name: Build LLVM and Clang
-        uses: shekohex/compile-llvm-action@master
+        uses: jura1357/compile-llvm-action@master
         with:
           version: '4.0.1'
           directory: ${{ runner.temp }}/llvm/4.0.1
