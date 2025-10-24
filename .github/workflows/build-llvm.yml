@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Cache LLVM and Clang
         id: cache-llvm
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ runner.temp }}/llvm/4.0.1
           key: ${{ matrix.os }}-llvm-test
