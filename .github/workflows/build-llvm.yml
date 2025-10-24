@@ -1,7 +1,7 @@
 name: Build LLVM
 
 on:
-  push:
+ [ push ]
 
 jobs:
   build:
