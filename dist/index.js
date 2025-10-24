@@ -1162,7 +1162,8 @@ function getUrl(version, component) {
  */
 function getUrl(version, component) {
   return `https://releases.llvm.org/4.0.1/llvm-4.0.1.src.tar.xz`;
-    
+}
+
 /**
  * @param {string} version
  * @param {string} outPath
