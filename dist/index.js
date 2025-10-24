@@ -1155,11 +1155,14 @@ function getFullVersions(version) {
 /**
  * @param {string} version
  * @param {string} component
- */
+
 function getUrl(version, component) {
   return `https://github.com/llvm/llvm-project/releases/download/llvmorg-${version}/${component}-${version}.src.tar.xz`;
 }
-
+ */
+function getUrl(version, component) {
+  return `https://releases.llvm.org/4.0.1/llvm-4.0.1.src.tar.xz`;
+    
 /**
  * @param {string} version
  * @param {string} outPath
