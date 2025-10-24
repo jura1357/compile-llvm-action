@@ -1188,9 +1188,9 @@ async function downloadLLVM(version, outPath) {
   console.log(`Downloading and extracting '${url}'...`);
   const archive = await tc.downloadTool(url);
   let exit;
-  if (platform === 'win32') {
+/*  if (platform === 'win32') {
     await exec.exec('choco install tar');
-  }
+  }*/
   await io.mkdirP(outPath);
   exit = await exec.exec('tar', [
     'xf',
