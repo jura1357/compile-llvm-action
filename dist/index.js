@@ -1161,7 +1161,7 @@ function getUrl(version, component) {
 }
  */
 function getUrl(version, component) {
-  return `https://releases.llvm.org/4.0.1/llvm-4.0.1.src.tar.xz`;
+  return `https://releases.llvm.org/${version}/${component}-${version}.src.tar.xz`;
 }
 
 /**
@@ -1214,7 +1214,7 @@ async function downloadClang(version, outPath) {
   let url;
   let fullVersion;
   for (const v of getFullVersions(version)) {
-    url = getUrl(v, 'clang');
+    url = getUrl(v, 'cfe');
     if (url) {
       fullVersion = v;
       core.setOutput('version', fullVersion);
@@ -1229,9 +1229,10 @@ async function downloadClang(version, outPath) {
   console.log(`Downloading and extracting '${url}'...`);
   const archive = await tc.downloadTool(url);
   let exit;
+  /*
   if (platform === 'win32') {
     await exec.exec('choco install tar');
-  }
+  } */
   exit = await io.mkdirP(outPath);
   exit = await exec.exec('tar', [
     'xf',
