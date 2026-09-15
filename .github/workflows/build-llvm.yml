@@ -1,34 +1,112 @@
-name: Build LLVM
+name: Build LLVM/Clang 4.0.1 for Windows (VS2017)
 
 on:
- [ push ]
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
 
 jobs:
-  build:
-    name: Build LLVM
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          # - os: ubuntu-latest
-          # - os: macos-latest
-          - os: windows-latest
+  build-llvm-4_0_1-vs2017:
+    # GitHub 托管 runner 无 windows-2017 标签，这里用 windows-2019，
+    # 再在步骤里通过 vswhere 定位 VS2017 的开发者环境。
+    runs-on: windows-2019
     steps:
-      - name: Cache LLVM and Clang
-        id: cache-llvm
-        uses: actions/cache@v3
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Verify toolchain
+        shell: bash
+        run: |
+          cmake --version
+          ninja --version || echo "ninja not found"
+          python --version || echo "python not found"
+
+      - name: Locate VS2017 VsDevCmd
+        id: vs2017
+        shell: cmd
+        run: |
+          for /f "usebackq delims=#" %%a in (`"%programfiles(x86)%\Microsoft Visual Studio\Installer\vswhere" -version "[15.0,16.0)" -products * -property installationPath`) do (
+            echo "VS2017_PATH=%%a" >> "%GITHUB_OUTPUT%"
+          )
+          # 兜底：若上面没找到，直接用 Community 版典型路径
+          if not defined VS2017_PATH (
+            echo "VS2017_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community" >> "%GITHUB_OUTPUT%"
+          )
+
+      - name: Download LLVM 4.0.1 sources
+        shell: bash
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/src"
+          cd "$GITHUB_WORKSPACE/src"
+          curl -fsSL -o llvm.tar.xz https://releases.llvm.org/4.0.1/llvm-4.0.1.src.tar.xz
+          curl -fsSL -o cfe.tar.xz https://releases.llvm.org/4.0.1/cfe-4.0.1.src.tar.xz
+          curl -fsSL -o compiler-rt.tar.xz https://releases.llvm.org/4.0.1/compiler-rt-4.0.1.src.tar.xz
+
+      - name: Extract sources
+        shell: bash
+        run: |
+          cd "$GITHUB_WORKSPACE/src"
+          tar -xf llvm.tar.xz
+          tar -xf cfe.tar.xz
+          tar -xf compiler-rt.tar.xz
+
+      # 4.0.1 还没引入 LLVM_ENABLE_PROJECTS，靠源码树布局启用子项目
+      - name: Arrange source tree
+        shell: bash
+        run: |
+          cd "$GITHUB_WORKSPACE/src"
+          mv llvm-4.0.1.src llvm
+          mv cfe-4.0.1.src llvm/tools/clang
+          mv compiler-rt-4.0.1.src llvm/projects/compiler-rt
+          ls llvm/tools
+          ls llvm/projects
+
+      - name: Configure LLVM with CMake (VS2017 env + Ninja)
+        shell: cmd
+        run: |
+          call "${{ steps.vs2017.outputs.VS2017_PATH }}\Common7\Tools\VsDevCmd.bat" -arch=amd64 -host_arch=amd64
+          cd /d %GITHUB_WORKSPACE%
+          mkdir build
+          cd build
+          set CC=cl
+          set CXX=cl
+          cmake -G "Ninja" ^
+            -S %GITHUB_WORKSPACE%\src\llvm ^
+            -B %GITHUB_WORKSPACE%\build ^
+            -DCMAKE_BUILD_TYPE=Release ^
+            -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%\llvm-install ^
+            -DLLVM_TARGETS_TO_BUILD=X86 ^
+            -DLLVM_INCLUDE_TESTS=OFF ^
+            -DLLVM_BUILD_TESTS=OFF ^
+            -DLLVM_INCLUDE_BENCHMARKS=OFF ^
+            -DLLVM_BUILD_BENCHMARKS=OFF ^
+            -DLLVM_PARALLEL_LINK_JOBS=1
+
+      - name: Build LLVM
+        shell: cmd
+        run: |
+          call "${{ steps.vs2017.outputs.VS2017_PATH }}\Common7\Tools\VsDevCmd.bat" -arch=amd64 -host_arch=amd64
+          cd /d %GITHUB_WORKSPACE%\build
+          ninja
+
+      - name: Install LLVM
+        shell: cmd
+        run: |
+          call "${{ steps.vs2017.outputs.VS2017_PATH }}\Common7\Tools\VsDevCmd.bat" -arch=amd64 -host_arch=amd64
+          cd /d %GITHUB_WORKSPACE%\build
+          ninja install
+
+      - name: Verify clang
+        shell: bash
+        run: |
+          "$GITHUB_WORKSPACE/llvm-install/bin/clang.exe" --version
+
+      - name: Upload install artifact
+        uses: actions/upload-artifact@v4
         with:
-          path: ${{ runner.temp }}/llvm/4.0.1
-          key: ${{ matrix.os }}-llvm-test
-      - name: Build LLVM and Clang
-        uses: jura1357/compile-llvm-action@master
-        with:
-          version: '4.0.1'
-          directory: ${{ runner.temp }}/llvm/4.0.1
-          cached: ${{ steps.cache-llvm.outputs.cache-hit }}
-      - name: LLVM Version (Windows)
-        if: matrix.os == 'windows-latest'
-        run: ${{ runner.temp }}/llvm/4.0.1/build/bin/llvm-config.exe --version
-      - name: LLVM Version (Unix)
-        if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
-        run: ${{ runner.temp }}/llvm/4.0.1/build/bin/llvm-config --version
+          name: llvm-4.0.1-windows-x64-vs2017
+          path: ${{ github.workspace }}/llvm-install
+          if-no-files-found: error
