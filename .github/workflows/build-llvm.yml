@@ -12,7 +12,7 @@ jobs:
   build-llvm-4_0_1-vs2017:
     # GitHub 托管 runner 无 windows-2017 标签，这里用 windows-2019，
     # 再在步骤里通过 vswhere 定位 VS2017 的开发者环境。
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
