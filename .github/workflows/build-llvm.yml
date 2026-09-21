@@ -28,10 +28,6 @@ jobs:
         id: vs2017
         shell: cmd
         run: |
-          #for /f "delims=#" %%a in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere" -version "[15.0,16.0)" -products * -property installationPath`) do (
-          #  echo "VS2017_PATH=%%a" >> "%GITHUB_OUTPUT%"
-          #)
-          # 兜底：若上面没找到，直接用 Community 版典型路径
           if not defined VS2017_PATH (
             echo "VS2017_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community" >> "%GITHUB_OUTPUT%"
           )
