@@ -32,13 +32,8 @@ jobs:
             echo "VS2017_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community" >> "%GITHUB_OUTPUT%"
           )
 
-      - name: Tmate Shell
-        uses: msys2/setup-msys2@v2
-
       - name: msys2
         uses: mxschmitt/action-tmate@v3
-        with:
-            msys2-location: ${{ steps.setup-msys2.outputs.msys2-location }}
         
       - name: Download LLVM 4.0.1 sources
         shell: bash
