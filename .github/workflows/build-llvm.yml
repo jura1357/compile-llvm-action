@@ -31,7 +31,7 @@ jobs:
           if not defined VS2017_PATH (
             echo "VS2017_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community" >> "%GITHUB_OUTPUT%"
           )
-
+          
       - name: Download LLVM 4.0.1 sources
         shell: bash
         run: |
