@@ -15,7 +15,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Verify toolchain
         shell: bash
@@ -98,7 +98,7 @@ jobs:
           "$GITHUB_WORKSPACE/llvm-install/bin/clang.exe" --version
 
       - name: Upload install artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: llvm-4.0.1-windows-x64-vs2017
           path: ${{ github.workspace }}/llvm-install
