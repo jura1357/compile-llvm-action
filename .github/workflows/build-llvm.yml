@@ -38,7 +38,6 @@ jobs:
           mkdir -p "$GITHUB_WORKSPACE/src"
           cd "$GITHUB_WORKSPACE/src"
           curl -fsSL -o llvm.tar.xz https://releases.llvm.org/4.0.1/llvm-4.0.1.src.tar.xz
-          curl -fsSL -o cfe.tar.xz https://releases.llvm.org/4.0.1/cfe-4.0.1.src.tar.xz
           curl -fsSL -o compiler-rt.tar.xz https://releases.llvm.org/4.0.1/compiler-rt-4.0.1.src.tar.xz
 
       - name: Extract sources
@@ -46,7 +45,6 @@ jobs:
         run: |
           cd "$GITHUB_WORKSPACE/src"
           tar -xf llvm.tar.xz
-          tar -xf cfe.tar.xz
           tar -xf compiler-rt.tar.xz
 
       # 4.0.1 还没引入 LLVM_ENABLE_PROJECTS，靠源码树布局启用子项目
@@ -55,7 +53,6 @@ jobs:
         run: |
           cd "$GITHUB_WORKSPACE/src"
           mv llvm-4.0.1.src llvm
-          mv cfe-4.0.1.src llvm/tools/clang
           mv compiler-rt-4.0.1.src llvm/projects/compiler-rt
           ls llvm/tools
           ls llvm/projects
